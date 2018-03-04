@@ -6,7 +6,7 @@ using namespace std;
 class Signature {
 public:
 	Signature();
-	~Signature();
+	//~Signature();
 
 	//ds dll creer la paire de clé grace aux deux fonctions
 	//penser a stocker la cle publique et privé dans un fichier 
