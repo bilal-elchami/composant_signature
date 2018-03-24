@@ -24,8 +24,8 @@ void Signature::initCurves() {
 }
 
 void Signature::generateKeys() {
-	uint8_t _private[32] = { 0 };
-	uint8_t _public[64] = { 0 };
+	// uint8_t _public[64] = { 0 };
+	// uint8_t _private[32] = { 0 };
 	
 	for (int c = 0; c < num_curves; ++c) {
 		if (!uECC_make_key(_public, _private, curves[c])) {
@@ -48,30 +48,33 @@ string Signature::getPrivateKey() {
 	return privateKey;
 }
 
-string Signature::signMessage(string data, string private_key) {
-	uint8_t* hash = string_to_uint8_t(data).data();
-	uint8_t* _private = string_to_uint8_t(private_key).data();
-
-	uint8_t sig[64] = { 0 };
-	vector<uint8_t> sigVectorBefore(begin(sig), end(sig));
-
-	for (int c = 0; c < num_curves; ++c) {
-		if (!uECC_sign(_private, hash, sizeof(hash), sig, curves[c])) {
+uint8_t* Signature::signMessage(string data, string private_key) {
+	string dataHashed = "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
+	uint8_t* hash = string_to_uint8_t(dataHashed).data();
+	cout << "Hash in sign message " << hash << endl;
+	// uint8_t sig[64] = { 0 };
+	int x = 0;
+	for (x = 0; x < num_curves; ++x) {
+		if (!uECC_sign(_private, hash, sizeof(hash), sig, curves[x])) {
 			cout << "uECC_sign() failed" << endl;
 		}
 	}
-	vector<uint8_t> sigVectorAfter(begin(sig), end(sig));
-	signatureStr = uint8_vector_to_hex_string(sigVectorAfter);
-	return signatureStr;
+
+	return sig;
+	// vector<uint8_t> sigVector(begin(sig), end(sig));
+	// signatureStr = uint8_vector_to_hex_string(sigVector);
+	// return signatureStr;
 }
 
-bool Signature::validateSignature(string data, string public_key, string signature) {
-	uint8_t* hash = string_to_uint8_t(data).data();
-	uint8_t* _public = string_to_uint8_t(public_key).data();
-	uint8_t* _signature = string_to_uint8_t(signature).data();
-
-	for (int c = 0; c < num_curves; ++c) {
-		if (!uECC_verify(_public, hash, sizeof(hash), _signature, curves[c])) {
+bool Signature::validateSignature(string data, string public_key, uint8_t* _signature) {
+	string dataHashed = "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
+	uint8_t* hash = string_to_uint8_t(dataHashed).data();
+	cout << "Hash in validate signature " << hash << endl;
+	// uint8_t* _public = string_to_uint8_t(public_key).data();
+	// uint8_t* _signature = string_to_uint8_t(signature).data();
+	int y = 0;
+	for (y = 0; y < num_curves; ++y) {
+		if (!uECC_verify(_public, hash, sizeof(hash), sig, curves[y])) {
 			cout << "uECC_verify() failed" << endl;
 			return false;
 		}
@@ -94,6 +97,8 @@ string Signature::uint8_vector_to_hex_string(const vector<uint8_t>& v) {
 vector<uint8_t> Signature::string_to_uint8_t(string value) {
 	vector<uint8_t> vec(value.begin(), value.end());
 	return vec;
+
+
 }
 
 string Signature::uint8_t_to_string(vector<uint8_t> value) {

@@ -29,10 +29,10 @@ public:
 
 	//signe message avec la clé privée les données hash : data => hash => hash crypté 
 	//appeler hash dans la fonction
-	string signMessage(string data, string private_key);
+	uint8_t* signMessage(string data, string private_key);
 	//signature , on compare avec la signature en entrée
 	//appeler la fonction verifie ECDSA 
-	bool validateSignature(string data, string public_key, string signature);
+	bool validateSignature(string data, string public_key, uint8_t* signature);
 
 private:
 	string uint8_vector_to_hex_string(const vector<uint8_t>& value);
@@ -44,4 +44,7 @@ private:
 	string signatureStr;// taille 64 hexadecimal (0_F)
 	string privateKey;
 	string publicKey;
+	uint8_t _private[32] = { 0 };
+	uint8_t sig[64] = { 0 };
+	uint8_t _public[64] = { 0 };
 };
