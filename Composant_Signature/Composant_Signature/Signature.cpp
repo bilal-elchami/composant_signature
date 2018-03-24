@@ -1,77 +1,102 @@
 #include "Signature.h"
-#include <algorithm>
-#include <bitset>
-#include <sstream>
-
-using namespace std;
 
 Signature::Signature() {
+	initCurves();
 	signatureStr = "";
 }
 
-//Signature::~Signature() {
-//	signatureStr = "";
-//}
-
-string Signature::createPrivateKey() {
-	const char *hex_digits = "0123456789ABCDEF";
-	//    int randomValue = rand()+;
-	string resultat;
-
-	do {
-		//        resultat  = convertisseur.to_hex(randomValue);
-		resultat += hex_digits[(rand() % 16)];
-	} while (resultat.size() != 16);
-
-	return resultat;
+void Signature::initCurves() {
+#if uECC_SUPPORTS_secp160r1
+	curves[num_curves++] = uECC_secp160r1();
+#endif
+#if uECC_SUPPORTS_secp192r1
+	curves[num_curves++] = uECC_secp192r1();
+#endif
+#if uECC_SUPPORTS_secp224r1
+	curves[num_curves++] = uECC_secp224r1();
+#endif
+#if uECC_SUPPORTS_secp256r1
+	curves[num_curves++] = uECC_secp256r1();
+#endif
+#if uECC_SUPPORTS_secp256k1
+	curves[num_curves++] = uECC_secp256k1();
+#endif
 }
 
-string Signature::createPublicKey(string private_key) {
-	string resultat;
-	for (unsigned int i = 0; i < private_key.size(); i += 2) {
-		//get 8 bites or 2 char hexa
-		resultat += bin_to_hex(
-			bin_complement(
-				hex_to_bin(private_key.substr(i, i + 2))
-			)
-		);
+void Signature::generateKeys() {
+	uint8_t _private[32] = { 0 };
+	uint8_t _public[64] = { 0 };
+	
+	for (int c = 0; c < num_curves; ++c) {
+		if (!uECC_make_key(_public, _private, curves[c])) {
+			cout << "uECC_make_key() failed" << endl;
+		}
 	}
-	transform(resultat.begin(), resultat.end(), resultat.begin(), ::toupper);
-	return resultat;
+
+	vector<uint8_t> privateVector(begin(_private), end(_private));
+	privateKey = uint8_vector_to_hex_string(privateVector);
+
+	vector<uint8_t> publicVector(begin(_public), end(_public));
+	publicKey = uint8_vector_to_hex_string(publicVector);
 }
 
-
-string Signature::bin_to_hex(string binaryString) {
-	bitset<32> bs(binaryString);
-	unsigned n = bs.to_ulong();
-	stringstream ss;
-	ss << hex << n;
-	return  (binaryString.compare(0, 4, "0000") == 0) ? "0" + ss.str() : ss.str();
+string Signature::getPublicKey() {
+	return publicKey;
 }
 
-string Signature::hex_to_bin(string hexaString) {
-	stringstream ss;
-	ss << hex << hexaString;
-	unsigned n;
-	ss >> n;
-	bitset<32> b(n);
-
-	return b.to_string().substr(32 - 4 * (hexaString.length()));
+string Signature::getPrivateKey() {
+	return privateKey;
 }
 
-//Signature Signature::signMessage(string data, string private_key) {
-//	return this;
-//}
+string Signature::signMessage(string data, string private_key) {
+	uint8_t* hash = string_to_uint8_t(data).data();
+	uint8_t* _private = string_to_uint8_t(private_key).data();
+
+	uint8_t sig[64] = { 0 };
+	vector<uint8_t> sigVectorBefore(begin(sig), end(sig));
+
+	for (int c = 0; c < num_curves; ++c) {
+		if (!uECC_sign(_private, hash, sizeof(hash), sig, curves[c])) {
+			cout << "uECC_sign() failed" << endl;
+		}
+	}
+	vector<uint8_t> sigVectorAfter(begin(sig), end(sig));
+	signatureStr = uint8_vector_to_hex_string(sigVectorAfter);
+	return signatureStr;
+}
 
 bool Signature::validateSignature(string data, string public_key, string signature) {
-	return false;
+	uint8_t* hash = string_to_uint8_t(data).data();
+	uint8_t* _public = string_to_uint8_t(public_key).data();
+	uint8_t* _signature = string_to_uint8_t(signature).data();
+
+	for (int c = 0; c < num_curves; ++c) {
+		if (!uECC_verify(_public, hash, sizeof(hash), _signature, curves[c])) {
+			cout << "uECC_verify() failed" << endl;
+			return false;
+		}
+	}
+	return true;
 }
 
-string Signature::bin_complement(string number) {
-	for (int i = number.length(), carry = 1; i-- > 0;) {
-		number[i] = (char)((number[i] ^ 1) + carry); // flip the bit and add the previous carry
-		carry = (number[i] & 2) >> 1;        // save the overflow in the carry variable
-		number[i] &= ~2;                 // mask out the overflow
+string Signature::uint8_vector_to_hex_string(const vector<uint8_t>& v) {
+	stringstream ss;
+	ss << std::hex << setfill('0');
+	vector<uint8_t>::const_iterator it;
+
+	for (it = v.begin(); it != v.end(); it++) {
+		ss << setw(2) << static_cast<unsigned>(*it);
 	}
-	return number;
+
+	return ss.str();
+}
+
+vector<uint8_t> Signature::string_to_uint8_t(string value) {
+	vector<uint8_t> vec(value.begin(), value.end());
+	return vec;
+}
+
+string Signature::uint8_t_to_string(vector<uint8_t> value) {
+	string str(value.begin(), value.end());
+	return str;
 }

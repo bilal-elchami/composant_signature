@@ -200,14 +200,6 @@
 
 using namespace std;
 
-string converter1(uint8_t str) {
-	return string((char *)str);
-}
-
-string converter(vector<uint8_t> str) {
-	uint8_t a = str[0];
-	return converter1(a);
-}
 
 string uint8_vector_to_hex_string(const vector<uint8_t>& v) {
 	stringstream ss;
@@ -226,7 +218,6 @@ vector<uint8_t> string_to_uint8(string value) {
 	return myVector;
 }
 
-
 string completePublicKey(string publicKey) {
 	return "04" + publicKey;
 }
@@ -241,7 +232,7 @@ string uint8_t_to_string(vector<uint8_t> value) {
 	return str;
 }
 
-int main() {
+int main2() {
 	int i, c;
 	uint8_t privatee[32] = { 0 };
 	uint8_t publicc[64] = { 0 };
@@ -303,7 +294,6 @@ int main() {
 	cout << "private key: " << uint8_vector_to_hex_string(privateVector) << endl;
 
 	string bilal = "bilal";
-	//cout << converter(string_to_uint8(bilal)) << endl;
 
 	cout << uint8_t_to_string(string_to_uint8_t(bilal)) << endl;
 	vector<uint8_t> a = string_to_uint8_t(bilal);
