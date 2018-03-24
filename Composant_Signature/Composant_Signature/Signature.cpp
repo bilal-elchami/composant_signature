@@ -27,11 +27,11 @@ void Signature::generateKeys() {
 	// uint8_t _public[64] = { 0 };
 	// uint8_t _private[32] = { 0 };
 	
-	for (int c = 0; c < num_curves; ++c) {
+	int c = 1;
 		if (!uECC_make_key(_public, _private, curves[c])) {
 			cout << "uECC_make_key() failed" << endl;
 		}
-	}
+	
 
 	vector<uint8_t> privateVector(begin(_private), end(_private));
 	privateKey = uint8_vector_to_hex_string(privateVector);
@@ -53,11 +53,9 @@ uint8_t* Signature::signMessage(string data, string private_key) {
 	uint8_t* hash = string_to_uint8_t(dataHashed).data();
 	cout << "Hash in sign message " << hash << endl;
 	// uint8_t sig[64] = { 0 };
-	int x = 0;
-	for (x = 0; x < num_curves; ++x) {
-		if (!uECC_sign(_private, hash, sizeof(hash), sig, curves[x])) {
-			cout << "uECC_sign() failed" << endl;
-		}
+	int x = 1;
+	if (!uECC_sign(_private, hash, sizeof(hash), sig, curves[x])) {
+		cout << "uECC_sign() failed" << endl;
 	}
 
 	return sig;
@@ -72,12 +70,10 @@ bool Signature::validateSignature(string data, string public_key, uint8_t* _sign
 	cout << "Hash in validate signature " << hash << endl;
 	// uint8_t* _public = string_to_uint8_t(public_key).data();
 	// uint8_t* _signature = string_to_uint8_t(signature).data();
-	int y = 0;
-	for (y = 0; y < num_curves; ++y) {
-		if (!uECC_verify(_public, hash, sizeof(hash), sig, curves[y])) {
-			cout << "uECC_verify() failed" << endl;
-			return false;
-		}
+	int y = 1;
+	if (!uECC_verify(_public, hash, sizeof(hash), sig, curves[y])) {
+		cout << "uECC_verify() failed" << endl;
+		return false;
 	}
 	return true;
 }
