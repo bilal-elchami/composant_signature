@@ -1,23 +1,23 @@
 #include "Signature.h"
 
 Signature::Signature() {
-	curve = uECC_secp192r1();
+	curve = uECC_secp256k1();
 	signatureStr = "";
 }
 
 void Signature::generateKeys() {
-	// uint8_t _public[64] = { 0 };
-	// uint8_t _private[32] = { 0 };
+	uint8_t _public[64] = { 0 };
+	uint8_t _private[32] = { 0 };
 	
 	if (!uECC_make_key(_public, _private, curve)) {
 		cout << "uECC_make_key() failed" << endl;
 	}
 	
 	vector<uint8_t> privateVector(begin(_private), end(_private));
-	privateKey = uint8_vector_to_hex_string(privateVector);
+	privateKey = uint8_to_hex_str(privateVector);
 
 	vector<uint8_t> publicVector(begin(_public), end(_public));
-	publicKey = uint8_vector_to_hex_string(publicVector);
+	publicKey = uint8_to_hex_str(publicVector);
 }
 
 string Signature::getPublicKey() {
@@ -28,37 +28,40 @@ string Signature::getPrivateKey() {
 	return privateKey;
 }
 
-uint8_t* Signature::signMessage(string data, string private_key) {
-	string dataHashed = "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
-	uint8_t* hash = string_to_uint8_t(dataHashed).data();
-	cout << "Hash in sign message " << hash << endl;
-	// uint8_t sig[64] = { 0 };
+string Signature::hash(string data) {
+	return "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
+}
+
+string Signature::signMessage(string data, string private_key) {
+	string dataHashed = hash(data);
+	uint8_t* hash = hex_str_to_uint8(dataHashed.c_str());
+	uint8_t* _private = hex_str_to_uint8(private_key.c_str());
+	uint8_t sig[64] = { 0 };
 
 	if (!uECC_sign(_private, hash, sizeof(hash), sig, curve)) {
 		cout << "uECC_sign() failed" << endl;
 	}
 
-	return sig;
-	// vector<uint8_t> sigVector(begin(sig), end(sig));
-	// signatureStr = uint8_vector_to_hex_string(sigVector);
-	// return signatureStr;
+	vector<uint8_t> sigVector = fill_vector(sig, 64);
+	signatureStr = uint8_to_hex_str(sigVector); 
+	return signatureStr;
 }
 
-bool Signature::validateSignature(string data, string public_key, uint8_t* _signature) {
-	string dataHashed = "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
-	uint8_t* hash = string_to_uint8_t(dataHashed).data();
-	cout << "Hash in validate signature " << hash << endl;
-	// uint8_t* _public = string_to_uint8_t(public_key).data();
-	// uint8_t* _signature = string_to_uint8_t(signature).data();
-	int y = 1;
-	if (!uECC_verify(_public, hash, sizeof(hash), sig, curve)) {
-		cout << "uECC_verify() failed" << endl;
+bool Signature::validateSignature(string data, string public_key, string _signature) {
+	string dataHashed = hash(data);
+
+	uint8_t* hash = hex_str_to_uint8(dataHashed.c_str());
+	uint8_t* _public = hex_str_to_uint8(public_key.c_str());
+	uint8_t* _sig = hex_str_to_uint8(_signature.c_str());
+
+	if (!uECC_verify(_public, hash, sizeof(hash), _sig, curve)) {
+		// uECC_verify() failed
 		return false;
 	}
 	return true;
 }
 
-string Signature::uint8_vector_to_hex_string(const vector<uint8_t>& v) {
+string Signature::uint8_to_hex_str(vector<uint8_t>& v) {
 	stringstream ss;
 	ss << std::hex << setfill('0');
 	vector<uint8_t>::const_iterator it;
@@ -70,12 +73,47 @@ string Signature::uint8_vector_to_hex_string(const vector<uint8_t>& v) {
 	return ss.str();
 }
 
-vector<uint8_t> Signature::string_to_uint8_t(string value) {
-	vector<uint8_t> vec(value.begin(), value.end());
-	return vec;
+uint8_t* Signature::hex_str_to_uint8(const char* string) {
+
+	if (string == NULL)
+		return NULL;
+
+	size_t slength = strlen(string);
+	if ((slength % 2) != 0) // must be even
+		return NULL;
+
+	size_t dlength = slength / 2;
+
+	uint8_t* data = (uint8_t*)malloc(dlength);
+
+	memset(data, 0, dlength);
+
+	size_t index = 0;
+	while (index < slength) {
+		char c = string[index];
+		int value = 0;
+		if (c >= '0' && c <= '9')
+			value = (c - '0');
+		else if (c >= 'A' && c <= 'F')
+			value = (10 + (c - 'A'));
+		else if (c >= 'a' && c <= 'f')
+			value = (10 + (c - 'a'));
+		else
+			return NULL;
+
+		data[(index / 2)] += value << (((index + 1) % 2) * 4);
+
+		index++;
+	}
+
+	return data;
 }
 
-string Signature::uint8_t_to_string(vector<uint8_t> value) {
-	string str(value.begin(), value.end());
-	return str;
+vector<uint8_t> Signature::fill_vector(uint8_t* data, int size) {
+	std::vector<uint8_t> out;
+	for (int x = 0; x < size; x++)
+	{
+		out.push_back(data[x]);
+	}
+	return out;
 }
