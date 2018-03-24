@@ -21,6 +21,12 @@
     <ClInclude Include="uECC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="uECC_vli.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Signature.cpp">
