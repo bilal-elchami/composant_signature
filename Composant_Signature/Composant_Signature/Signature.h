@@ -38,9 +38,7 @@ private:
 	string uint8_vector_to_hex_string(const vector<uint8_t>& value);
 	vector<uint8_t> string_to_uint8_t(string value);
 	string uint8_t_to_string(vector<uint8_t> value);
-	void initCurves();
-	const struct uECC_Curve_t * curves[5];
-	int num_curves = 0;
+	uECC_Curve curve;
 	string signatureStr;// taille 64 hexadecimal (0_F)
 	string privateKey;
 	string publicKey;
