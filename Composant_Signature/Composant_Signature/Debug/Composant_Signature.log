@@ -1,0 +1,10 @@
+﻿  main.cpp
+  RIPEMD160.cpp
+  Signature.cpp
+  Source.cpp
+Source.cpp(122): warning C4018: '<': signed/unsigned mismatch
+Source.cpp(151): warning C4018: '<=': signed/unsigned mismatch
+  Generating Code...
+  .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+  Composant_Signature.vcxproj -> D:\_Masters\Master 2\Projet composants\Projet_Signature\composant_signature\Composant_Signature\Debug\Composant_Signature.exe
+  Composant_Signature.vcxproj -> D:\_Masters\Master 2\Projet composants\Projet_Signature\composant_signature\Composant_Signature\Debug\Composant_Signature.pdb (Full PDB)

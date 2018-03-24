@@ -11,8 +11,8 @@ public:
 	//ds dll creer la paire de clé grace aux deux fonctions
 	//penser a stocker la cle publique et privé dans un fichier 
 	//la clé publique peut etre donnée a tous 
-	string createPublicKey();
-	string createPrivateKey(string public_key);
+	string createPublicKey(string private_key);
+	string createPrivateKey();
 
 	//appeler le hasheur
 	//crypter avec la clé privé
@@ -27,4 +27,7 @@ public:
 
 private:
 	string signatureStr;// taille 64 hexadecimal (0_F)
+	string bin_to_hex(string binaryString);
+	string hex_to_bin(string binaryString);
+	string bin_complement(string number);
 };
