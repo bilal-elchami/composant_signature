@@ -150,16 +150,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="KeyChain.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="uECC_vli.h" />
     <ClInclude Include="Signature.h" />
     <ClInclude Include="uECC.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="KeyChain.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RIPEMD160.cpp" />
     <ClCompile Include="Signature.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="uECC.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

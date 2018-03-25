@@ -1,11 +1,7 @@
 #include "Signature.h"
 
-Signature::Signature() {
-	curve = uECC_secp256k1();
-	signatureStr = "";
-}
-
-void Signature::generateKeys() {
+KeyChain Signature::generateKeys() {
+	uECC_Curve curve = uECC_secp256k1();
 	uint8_t _public[64] = { 0 };
 	uint8_t _private[32] = { 0 };
 	
@@ -14,25 +10,17 @@ void Signature::generateKeys() {
 	}
 	
 	vector<uint8_t> privateVector(begin(_private), end(_private));
-	privateKey = uint8_to_hex_str(privateVector);
+	string private_key = uint8_to_hex_str(privateVector);
 
 	vector<uint8_t> publicVector(begin(_public), end(_public));
-	publicKey = uint8_to_hex_str(publicVector);
-}
+	string public_key = uint8_to_hex_str(publicVector);
 
-string Signature::getPublicKey() {
-	return publicKey;
-}
-
-string Signature::getPrivateKey() {
-	return privateKey;
-}
-
-string Signature::hash(string data) {
-	return "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
+	KeyChain key_chain(private_key, public_key);
+	return key_chain;
 }
 
 string Signature::signMessage(string data, string private_key) {
+	uECC_Curve curve = uECC_secp256k1();
 	string dataHashed = hash(data);
 	uint8_t* hash = hex_str_to_uint8(dataHashed.c_str());
 	uint8_t* _private = hex_str_to_uint8(private_key.c_str());
@@ -48,6 +36,7 @@ string Signature::signMessage(string data, string private_key) {
 }
 
 bool Signature::validateSignature(string data, string public_key, string _signature) {
+	uECC_Curve curve = uECC_secp256k1();
 	string dataHashed = hash(data);
 
 	uint8_t* hash = hex_str_to_uint8(dataHashed.c_str());
@@ -116,4 +105,8 @@ vector<uint8_t> Signature::fill_vector(uint8_t* data, int size) {
 		out.push_back(data[x]);
 	}
 	return out;
+}
+
+string Signature::hash(string data) {
+	return "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
 }
