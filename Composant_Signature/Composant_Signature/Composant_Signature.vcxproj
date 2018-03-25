@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ComposantSignature.h" />
     <ClInclude Include="KeyChain.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="uECC_vli.h" />

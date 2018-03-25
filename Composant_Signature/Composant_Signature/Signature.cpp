@@ -30,9 +30,8 @@ string Signature::signMessage(string data, string private_key) {
 		cout << "uECC_sign() failed" << endl;
 	}
 
-	vector<uint8_t> sigVector = fill_vector(sig, 64);
-	signatureStr = uint8_to_hex_str(sigVector); 
-	return signatureStr;
+	vector<uint8_t> sigVector = fill_vector(sig, 64); 
+	return uint8_to_hex_str(sigVector);
 }
 
 bool Signature::validateSignature(string data, string public_key, string _signature) {
