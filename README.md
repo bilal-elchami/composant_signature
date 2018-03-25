@@ -10,7 +10,7 @@ En effet, le bénéficiaire, à l’aide de la clé publique fourni par l’éme
 Le bénéficiaire déchiffre le transaction hachage de la transaction et s’assure ainsi de l’origine de celle-ci. Il compare à posteriori le hachage reçu avec le résultat du hachage de la transaction (non hachée) reçue.
 
 ### Signatures des méthodes
-Les signatures des méthodes du composant Signature sont les suivants :
+Les méthodes du composant Signature sont les suivants :
     
     KeyChain generateKeys();
     
