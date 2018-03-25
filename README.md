@@ -24,4 +24,4 @@ avec KeyChain étant une classe qui contient 2 attribut de type string :
     
     string public_key
 
-Vous pouvez sauvegarder les 2 clés : `private_key`, `public_key` dans 2 fichiers séparés : `private.key` et `public.key` en utilisant la méthode `save()` de la classe KeyChain
+Vous pouvez sauvegarder les 2 clés : `private_key` et `public_key` dans 2 fichiers séparés : `private.key` et `public.key` en utilisant la méthode `save()` de la classe KeyChain
