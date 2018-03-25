@@ -23,3 +23,5 @@ avec KeyChain étant une classe qui contient 2 attribut de type string :
     string private_key
     
     string public_key
+
+Vous pouvez sauvegarder les 2 clés : `private_key`, `public_key` dans un fichier en utilisant la méthode `save()` de la classe KeyChain
