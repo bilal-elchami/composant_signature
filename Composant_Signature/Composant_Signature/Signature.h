@@ -1,4 +1,13 @@
 #pragma once
+#ifndef COMPOSANT_SIGNATURE_H
+#define COMPOSANT_SIGNATURE_H
+
+#ifdef COMPOSANT_SIGNATURE_EXPORTS
+#define COMPOSANT_SIGNATURE_INTERFACE __declspec(dllexport)
+#else
+#define COMPOSANT_SIGNATURE_INTERFACE __declspec(dllimport)
+#endif
+
 #include <vector>
 #include <string>
 #include <iomanip>
@@ -8,7 +17,7 @@
 #include "KeyChain.h"
 using namespace std;
 
-class Signature {
+COMPOSANT_SIGNATURE_INTERFACE class Signature {
 public:
 	static KeyChain generateKeys();
 	static string signMessage(string data, string private_key);
@@ -19,3 +28,5 @@ private:
 	static uint8_t* hex_str_to_uint8(const char* string);
 	static vector<uint8_t> fill_vector(uint8_t* data, int size);
 };
+
+#endif

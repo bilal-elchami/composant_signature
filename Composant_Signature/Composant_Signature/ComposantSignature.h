@@ -1,8 +1,15 @@
 #pragma once
-#include <string>
-#include "KeyChain.h"
-using namespace std;
+#ifndef COMPOSANT_SIGNATURE_H
+#define COMPOSANT_SIGNATURE_H
 
-KeyChain generateKeys();
-string signMessage(string data, string private_key);
-bool validateSignature(string data, string public_key, string signature);
+#ifdef COMPOSANT_SIGNATURE_EXPORTS
+#define COMPOSANT_SIGNATURE_INTERFACE __declspec(dllexport)
+#else
+#define COMPOSANT_SIGNATURE_INTERFACE __declspec(dllimport)
+#endif
+
+COMPOSANT_SIGNATURE_INTERFACE KeyChain generateKeys();
+COMPOSANT_SIGNATURE_INTERFACE string signMessage(string data, string private_key);
+COMPOSANT_SIGNATURE_INTERFACE bool validateSignature(string data, string public_key, string signature);
+
+#endif

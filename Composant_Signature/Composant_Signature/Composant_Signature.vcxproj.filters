@@ -30,9 +30,6 @@
     <ClInclude Include="KeyChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComposantSignature.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Signature.cpp">
@@ -47,5 +44,13 @@
     <ClCompile Include="KeyChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="curve-specific.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="platform-specific.inc">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
