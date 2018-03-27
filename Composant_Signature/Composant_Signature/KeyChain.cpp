@@ -8,10 +8,10 @@ void KeyChain::save() {
 	ofstream privateOutputFile("private.key");
 	privateOutputFile << private_key;
 	privateOutputFile.close();
-	cout << "File 'private.key' containing private key is created " << endl;
+	cout << "File 'private.key' containing private key is created" << endl;
 
 	ofstream publicOutputFile("public.key");
 	publicOutputFile << public_key;
 	publicOutputFile.close();
-	cout << "File 'public.key' containing private key is created " << endl;
+	cout << "File 'public.key' containing public key is created" << endl << endl;
 }
