@@ -13,20 +13,19 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include "uECC.h"
 #include "KeyChain.h"
 using namespace std;
 
-COMPOSANT_SIGNATURE_INTERFACE class Signature {
+class Signature {
 public:
-	static KeyChain generateKeys();
-	static string signMessage(string data, string private_key);
-	static bool validateSignature(string data, string public_key, string signature);
+	COMPOSANT_SIGNATURE_INTERFACE static KeyChain generateKeys();
+	COMPOSANT_SIGNATURE_INTERFACE static string signMessage(string data, string private_key);
+	COMPOSANT_SIGNATURE_INTERFACE static bool validateSignature(string data, string public_key, string signature);
 private:
-	static string hash(string data);
-	static string uint8_to_hex_str(vector<uint8_t>& value);
-	static uint8_t* hex_str_to_uint8(const char* string);
-	static vector<uint8_t> fill_vector(uint8_t* data, int size);
+	COMPOSANT_SIGNATURE_INTERFACE static string hash(string data);
+	COMPOSANT_SIGNATURE_INTERFACE static string uint8_to_hex_str(vector<uint8_t>& value);
+	COMPOSANT_SIGNATURE_INTERFACE static uint8_t* hex_str_to_uint8(const char* string);
+	COMPOSANT_SIGNATURE_INTERFACE static vector<uint8_t> fill_vector(uint8_t* data, int size);
 };
 
 #endif

@@ -1,4 +1,6 @@
 #include "Signature.h"
+#include "uECC.h"
+#include "Hacheur.h"
 
 KeyChain Signature::generateKeys() {
 	uECC_Curve curve = uECC_secp256k1();
@@ -107,5 +109,7 @@ vector<uint8_t> Signature::fill_vector(uint8_t* data, int size) {
 }
 
 string Signature::hash(string data) {
-	return "A8C8E2042F702DCA60AC688EDCDFC72F6EA535745B2A0FD01EF9506E4839C134";
+	Hacheur hacheur = Hacheur();
+	string output = hacheur.hacher(data);
+	return output;
 }
